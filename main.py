@@ -52,6 +52,10 @@ def check_intent(route, stop, agency):
     log.info('Request object = %s' % request)
     if request['dialogState'] != 'COMPLETED':
         return delegate_dialog()
+
+    if route.startswith("r"):
+        route = 'red'
+
     message = CheckIntent.check(route, stop, '%s-%s' % (os.environ['city'].lower(), agency.replace(' ', '-')))
     log.info('Response message = %s', message)
     return generate_statement_card(message, 'Check Status')
@@ -64,7 +68,9 @@ def set_intent(route, stop, preset, agency):
         return delegate_dialog()
     if preset == 'to':
         preset = '2'
-    
+    if route.startswith("r"):
+        route = 'red'
+
     message = SetIntent.add(context.System.user.userId, route, stop, preset,
                             '%s-%s' % (os.environ['city'].lower(), agency.replace(' ', '-')))
     log.info('Response message = %s', message)
@@ -116,7 +122,7 @@ if __name__ == '__main__':
     app.config['ASK_VERIFY_REQUESTS'] = False
 
     json_data = open('zappa_settings.json')
-    env_vars = json.load(json_data)['test']['environment_variables']
+    env_vars = json.load(json_data)['dev']['environment_variables']
     for key, val in env_vars.items():
         os.environ[key] = val
 
