@@ -72,8 +72,8 @@ def set_intent(route, stop, preset, agency):
     if request['dialogState'] != 'COMPLETED':
         return delegate_dialog()
 
-    preset = preset.upper()
-    if preset and not re.match('[A-Z]', preset):
+    preset = preset[0].upper()
+    if preset and not re.match(r'[A-Z]', preset):
         return request_slot('preset')
 
     if route.startswith("r"):
@@ -91,8 +91,8 @@ def get_intent(preset, agency):
     if request['dialogState'] != 'COMPLETED':
         return delegate_dialog()
 
-    preset = preset.upper()
-    if preset and not re.match('[A-Z]', preset):
+    preset = preset[0].upper()
+    if preset and not re.match(r'[A-Z]', preset):
         return request_slot('preset')
 
     message = GetIntent.get(context.System.user.userId, preset,
